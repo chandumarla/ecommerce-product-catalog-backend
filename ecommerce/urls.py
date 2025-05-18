@@ -19,9 +19,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.authtoken.views import obtain_auth_token
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.home, name='home'),
     path('api/', include('catalog.urls')),
     path('api-token-auth/', obtain_auth_token), 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
