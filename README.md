@@ -1,17 +1,17 @@
 # ecommerce-product-catalog-backend
 A Django REST API for managing and browsing products, with role-based admin access. Supports product listing, detail view, admin-only add/delete, and category-based filtering.
 
-# Deploying to Heroku
+# Deploying to Render
 
-Follow these steps to deploy this Django project to Heroku.
+Follow these steps to deploy this Django project to [Render](https://render.com/).
 
 ---
 
 ## 1. Prerequisites
 
-- [Heroku account](https://signup.heroku.com/)
-- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed
+- [Render account](https://dashboard.render.com/register)
 - [Git](https://git-scm.com/) installed
+- Project code pushed to [GitHub](https://github.com/) (Render deploys from GitHub)
 
 ---
 
@@ -54,11 +54,17 @@ Follow these steps to deploy this Django project to Heroku.
         ```python
         STATIC_ROOT = BASE_DIR / 'staticfiles'
         STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-        MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+        # Add WhiteNoise middleware after SecurityMiddleware
+        # Example:
+        # MIDDLEWARE = [
+        #     'django.middleware.security.SecurityMiddleware',
+        #     'whitenoise.middleware.WhiteNoiseMiddleware',
+        #     ...
+        # ]
         ```
     - Set allowed hosts:
         ```python
-        ALLOWED_HOSTS = ['.herokuapp.com', 'localhost', '127.0.0.1']
+        ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
         ```
     - Set debug mode:
         ```python
@@ -67,69 +73,77 @@ Follow these steps to deploy this Django project to Heroku.
 
 ---
 
-## 4. Initialize Git
+## 4. Push to GitHub
 
 If not already a git repo:
 ```
 git init
 git add .
-git commit -m "Prepare project for Heroku deployment"
+git commit -m "Prepare project for Render deployment"
+git remote add origin <your-github-repo-url>
+git push -u origin main
 ```
 
 ---
 
-## 5. Create and Configure Heroku App
+## 5. Deploy on Render
 
-1. **Login to Heroku:**
-    ```
-    heroku login
-    ```
+1. **Create a new Web Service** on [Render](https://dashboard.render.com/):
+    - Connect your GitHub repo.
+    - Set the **Build Command** to:
+        ```
+        pip install -r requirements.txt
+        ```
+    - Set the **Start Command** to:
+        ```
+        gunicorn ecommerce.wsgi
+        ```
+    - Add environment variables:
+        - `SECRET_KEY` (your Django secret key)
+        - `DEBUG` (set to `False`)
+        - `DATABASE_URL` (if using a custom database; Render auto-sets this if you add a PostgreSQL database)
 
-2. **Create a new Heroku app:**
-    ```
-    heroku create your-app-name
-    ```
+2. **Add a PostgreSQL database** (optional but recommended):
+    - Create a new PostgreSQL database in Render.
+    - Render will provide a `DATABASE_URL`—add it to your web service's environment variables if not set automatically.
 
-3. **Set environment variables:**
-    ```
-    heroku config:set SECRET_KEY='your-secret-key'
-    heroku config:set DEBUG=False
+---
+
+## 6. Run Migrations and Create Superuser
+
+After your service is built and deployed:
+- Go to your service in the Render dashboard.
+- Open the **Shell** tab.
+- Run:
+    ```bash
+    python manage.py migrate
+    python manage.py createsuperuser
+    python manage.py collectstatic --noinput
     ```
 
 ---
 
-## 6. Deploy to Heroku
+## 7. Update CORS and CSRF Settings
 
-1. **Push code:**
-    ```
-    git push heroku master
-    ```
-    *(or `git push heroku main` if your branch is named main)*
-
-2. **Run migrations:**
-    ```
-    heroku run python manage.py migrate
-    ```
-
-3. **Create superuser:**
-    ```
-    heroku run python manage.py createsuperuser
-    ```
-
-4. **Collect static files:**
-    ```
-    heroku run python manage.py collectstatic --noinput
-    ```
-
----
-
-## 7. Open Your App
-
+After deploying your frontend, add its URL to `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` in `settings.py`:
+```python
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8001",
+    "https://your-frontend-app.onrender.com",  # or your actual frontend URL
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8001",
+    "https://your-frontend-app.onrender.com",
+]
 ```
-heroku open
-```
-Or visit `https://your-app-name.herokuapp.com/`
+Then commit and push changes to GitHub; Render will redeploy automatically.
 
 ---
 
-**Done! Your Django app is now live on Heroku.**
+## 8. Open Your App
+
+Visit the URL provided by Render (e.g., `https://your-backend-app.onrender.com/`).
+
+---
+
+**Done! Your Django app is now live on Render.**
