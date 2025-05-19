@@ -41,6 +41,7 @@ ecommerce-product-catalog-backend/
    cd product_catalog_api
 
 ## Create virtual environment and install dependencies
+ ```bash
    python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -50,20 +51,23 @@ Configure .env or settings for MySQL (optional)
 Update DATABASES in settings.py if using MySQL
 
 ## Run migrations
-
+ ```bash
 python manage.py migrate
 Create superuser
 
  ## create superuser
+ ```bash
 python manage.py createsuperuser
 
 ## Run development server
+ ```bash
 
 python manage.py runserver
 
 ## 🔐Token Authentication (Admin)
 Generate token for a user (e.g., admin):
 Run this command in terminal
+ ```bash
 python manage.py shell
 # add this code
 from rest_framework.authtoken.models import Token
