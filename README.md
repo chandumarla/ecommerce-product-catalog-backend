@@ -57,18 +57,18 @@ python manage.py migrate
 Create superuser
 
  ## create superuser
- ```bash
+
 python manage.py createsuperuser
 
 ## Run development server
- ```bash
+ 
 
 python manage.py runserver
 
 ## 🔐Token Authentication (Admin)
 Generate token for a user (e.g., admin):
 Run this command in terminal
- ```bash
+
 python manage.py shell
 # add this code
 from rest_framework.authtoken.models import Token
