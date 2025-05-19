@@ -41,7 +41,8 @@ ecommerce-product-catalog-backend/
    cd product_catalog_api
 
 ## Create virtual environment and install dependencies
- ```bash
+
+   
    python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -51,7 +52,7 @@ Configure .env or settings for MySQL (optional)
 Update DATABASES in settings.py if using MySQL
 
 ## Run migrations
- ```bash
+
 python manage.py migrate
 Create superuser
 
