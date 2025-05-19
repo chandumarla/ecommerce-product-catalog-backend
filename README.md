@@ -95,7 +95,7 @@ WSGI configuration
 Admin and token auth enabled
 
 # API Base URL:
-https://yourusername.pythonanywhere.com/api/products/
+https://chandumarla.pythonanywhere.com/
 
 
 
